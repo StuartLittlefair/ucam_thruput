@@ -44,6 +44,16 @@ def _check_tables():
     return itable, mtable
 
 
+def list_keywords():
+    """
+    Get all the keywords that can be used to define obsmodes.
+    """
+    itable, _ = _check_tables()
+    kws = set(itable['KEYWORD'])
+    kws.remove('default')
+    return kws
+
+
 def getref(telescope):
     """
     Get dictionary used to setup pysynphot to use ULTRACAM tables
