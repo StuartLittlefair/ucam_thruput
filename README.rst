@@ -52,6 +52,15 @@ You will only need to do this once. Once setup, you can then enable the
     # now make pysynphot use our throughput models
     # we specify a telescope here so that we set the primary area
     setup_dictionary = getref('tnt')
+    S.setref(**setup_dictionary)
+
+You can switch back to using the built-in ``pysynphot`` models (including HST instruments,
+and Johnson/SDSS filters) at any time
+
+.. code-block:: python
+
+    S.setref(comptable=None, graphtable=None)  # leave the telescope area as it was
+    S.setref(area=None)  # reset the telescope area as well
 
 Once ``pysynphot`` is setup to use the ``ucam_thruput`` models, we can define a
 `BandPass <http://pysynphot.readthedocs.io/en/latest/bandpass.html>`_ using a
@@ -66,3 +75,13 @@ These bandpasses can be used with ``pysynphot`` in the usual way. See the
 ``pysynphot`` `docs <http://pysynphot.readthedocs.io/en/latest>`_ for full
 information.
 
+A complete observing mode string specfies the telescope (gtc, tnt, wht, ntt or vlt),
+the instrument (ucam, uspec, hcam) and a filter. Additional keywords can be used that
+allow one to ignore the atmosphere (noatmos), insert the scintillation corrector
+(scint_corr), use the old NTT/ULTRACAM collimator (old) or use the NTT cube (cube).
+Not all combinations of keywords are valid. A full list of keywords, including all filters,
+can be found using the ``list_keywords`` function:
+
+ .. code-block:: python
+    from ucam_thruput import list_keywords
+    list_keywords()
