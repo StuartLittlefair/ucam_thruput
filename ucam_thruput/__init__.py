@@ -49,6 +49,7 @@ def list_keywords():
     Get all the keywords that can be used to define obsmodes.
     """
     itable, _ = _check_tables()
+    itable = Table.read(itable)
     kws = set(itable['KEYWORD'])
     kws.remove('default')
     return kws
