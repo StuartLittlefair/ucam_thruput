@@ -80,7 +80,7 @@ the instrument (ucam, uspec, hcam) and a filter. Additional keywords can be used
 allow one to ignore the atmosphere (noatmos), insert the scintillation corrector
 (scint_corr), use the old NTT/ULTRACAM collimator (old) or use the NTT cube (cube).
 Not all combinations of keywords are valid. A full list of keywords, including all filters,
-can be found using the ``list_keywords`` function:
+can be found using the ``list_keywords`` function.
 
  .. code-block:: python
     from ucam_thruput import list_keywords
