@@ -11,7 +11,7 @@ Installation
 The software is written as much as possible to make use of core Python
 components. The only third-party requirements are `astropy <http://astropy.org/>`_,
 ``numpy`` and, optionally, `graphviz <http://graphviz.readthedocs.io/en/stable/manual.html>`_
- - for making pretty graphical illustrations of the lightpath through the instruments.
+ for making pretty graphical illustrations of the lightpath through the instruments.
 
 Once you have installed these, download the module and install with the usual::
 
@@ -86,3 +86,32 @@ can be found using the ``list_keywords`` function.
 
     from ucam_thruput import list_keywords
     list_keywords()
+
+Models
+------
+
+Below are graphical representations of the instrument throughput models. The light paths
+are shown as a series of nodes, connected by edges (lines). Each edge represents the
+application of a transparency curve. If a line is labelled by a keyword, that path will
+only be taken if the keyword is present in the string used to define the
+`BandPass <http://pysynphot.readthedocs.io/en/latest/bandpass.html>`_.
+
+Dashed lines represent "clear" transparency curves, that do not affect the throughput.
+Red lines represent reflections from dichroic surfaces. Unlabelled lines represent the default
+path.
+
+**Common** - entry path followed by all instruments
+
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/common.png
+
+**ULTRACAM**
+
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/ucam.png
+
+**HiperCAM**
+
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/hcam.png
+
+**ULTRASPEC**
+
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/ULTRASPEC.png

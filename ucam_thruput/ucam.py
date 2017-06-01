@@ -82,6 +82,7 @@ class Ucam:
         retlist.append(Edge(121, 999, 'ucam_ccd_blu', 'u')),
         retlist.append(Edge(121, 999, 'ucam_ccd_grn', 'g')),
         retlist.append(Edge(121, 999, 'ucam_ccd_red'))
+        return retlist
 
     @property
     def instrument_table_rows(self):
