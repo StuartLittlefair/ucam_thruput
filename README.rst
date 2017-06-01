@@ -114,4 +114,4 @@ path.
 
 **ULTRASPEC**
 
-.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/ULTRASPEC.png
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/uspec.png
