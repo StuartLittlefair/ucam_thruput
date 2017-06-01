@@ -82,7 +82,7 @@ allow one to ignore the atmosphere (noatmos), insert the scintillation corrector
 Not all combinations of keywords are valid. A full list of keywords, including all filters,
 can be found using the ``list_keywords`` function.
 
- .. code-block:: python
+.. code-block:: python
 
     from ucam_thruput import list_keywords
     list_keywords()
