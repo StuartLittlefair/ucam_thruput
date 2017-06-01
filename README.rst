@@ -33,7 +33,16 @@ First of all, follow the installation directions for `pysynphot <http://pysynpho
 also install some of the data files, in particular those in the ``synphot1.tar.gz`` archive.
 Set the ``PYSYN_CDBS`` environment variable to the location of these data files.
 
-You can then enable the ``ucam_thruput`` models in Python like so:
+When you use the module for the first time, some data files must be installed.
+You can do this from inside Python:
+
+.. code-block:: python
+    from ucam_thruput import setup
+
+    setup()
+
+You will only need to do this once. Once setup, you can then enable the
+``ucam_thruput`` models in Python like so:
 
 .. code-block:: python
 
