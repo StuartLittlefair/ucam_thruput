@@ -32,14 +32,14 @@ def read_filter_file(fname):
         start, end = (float(x) for x in lines[2].split(','))
         _, step = (float(x) for x in lines[4].split(','))
         y = np.array([float(val.strip()) for val in lines[5:]])
-        x = start + step*np.arange(len(y))
+        x = end - step*np.arange(len(y))
         # check we're close to the end value
-        assert np.allclose(x.max(), end)
+        assert np.allclose(x.min(), start)
     return x, y
 
 
 def fix_filter(in_fname, out_fname, f_ratio):
-    x, y = np.loadtxt(in_fname).T
+    x, y = read_filter_file(in_fname)
     # x should be in AA, but is sometimes nm
     if x.min() < 1000:
         x *= 10
