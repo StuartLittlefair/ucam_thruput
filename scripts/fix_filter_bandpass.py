@@ -49,7 +49,7 @@ def fix_filter(in_fname, out_fname, f_ratio):
 
     # f-ratio fix, assuming n=1.5
     # ULTRACAM is f/2.3, HiPERCAM is f/2.47
-    theta = np.degrees(np.arctan(1/f_ratio/2))
+    theta = np.arctan(1/f_ratio/2)
     n = 1.5
     lambda_central = S.ArrayBandpass(x, y).pivot()
     shift = 0.5*lambda_central*(np.sqrt(n**2-np.sin(theta)**2)/n - 1)
