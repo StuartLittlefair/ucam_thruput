@@ -130,8 +130,8 @@ The following example calculates the colour terms of USPEC/TNT g'-band.
     import os
     from matplotlib import pyplot as plt
     import numpy as np
-    from ucam_thruput import setup, getref
-    import pysynphot as S
+    from ucam_thruput.observationmode import ObservationMode
+    from synphot import SourceSpectrum, Observation, SpectralElement
 
     pickles_path = os.path.join(os.environ['PYSYN_CDBS'], 'grid', 'pickles', 'dat_uvk')
     pickles_ms = (
@@ -165,32 +165,31 @@ The following example calculates the colour terms of USPEC/TNT g'-band.
     )
 
     uspec_g = []
-    sdss_g = []
-    sdss_r = []
-    S.setref(**getref('tnt'))
+    V = []
+    R = []
     for name, spt, teff in pickles_ms:
-        sp = S.FileSpectrum(os.path.join(pickles_path, name+'.fits'))
+        sp = SourceSpectrum.from_file(os.path.join(pickles_path, name+'.fits'))
 
-        bp = S.ObsBandpass('uspec,tnt,g')
-        obs = S.Observation(sp, bp, force='taper')
+        mode = ObservationMode('uspec, tnt, g')
+        obs = Observation(sp, mode.throughput, force='taper')
         uspec_g.append(obs.effstim('abmag'))
 
-    S.setref(comptable=None, graphtable=None)
+
     for name, spt, teff in pickles_ms:
-        sp = S.FileSpectrum(os.path.join(pickles_path, name+'.fits'))
-        bp = S.ObsBandpass('sdss,r')
+        sp = SourceSpectrum.from_file(os.path.join(pickles_path, name+'.fits'))
+        bp = SpectralElement.from_filter('johnson_v')
         obs = S.Observation(sp, bp, force='taper')
-        sdss_r.append(obs.effstim('abmag'))
-        bp = S.ObsBandpass('sdss,g')
+        V.append(obs.effstim('abmag'))
+        bp = SpectralElement.from_filter('johnson_r')
         obs = S.Observation(sp, bp, force='taper')
-        sdss_g.append(obs.effstim('abmag'))
+        R.append(obs.effstim('abmag'))
 
     uspec_g = np.array(uspec_g)
-    sdss_g = np.array(sdss_g)
-    sdss_r = np.array(sdss_r)
-    plt.plot(sdss_g - sdss_r, uspec_g - sdss_g, 'r.')
-    plt.xlabel("g'-r'")
-    plt.ylabel("uspec_g - g'")
+    V = np.array(V)
+    R= np.array(R)
+    plt.plot(V - R, uspec_g - V, 'r.')
+    plt.xlabel("V-R")
+    plt.ylabel("uspec_g - V")
     plt.show()
 
 .. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/uspec_g_colour_terms.png
@@ -202,19 +201,20 @@ Here is an example that plots the various contributions to a bandpass.
 .. code-block:: python
 
     import os
-
-    import pysynphot as S
-    from ucam_thruput import getref
+    from ucam_thruput.observationmode import ObservationMode
     from matplotlib import pyplot as plt
+    from astropy import units as u
 
-    S.setref(**getref('tnt'))
-    bp = S.ObsBandpass('uspec,tnt,g')
+    obsmode = ObservationMode('uspec, tnt, g')
+    x = np.linspace(3000, 7000, 200)*u.AA
 
-    plt.plot(bp.wave, bp.throughput, 'k-')
-    for comp in bp.complist():
-        name = os.path.splitext(os.path.split(comp.name)[1])[0]
-        if name != 'alum':
-            plt.plot(comp.wave, comp.throughput, ls='--', label=name)
+    plt.plot(x, obsmode.throughput(x), 'k-')
+    already_plotted = []
+    for comp in obsmode.components:
+        name = os.path.splitext(os.path.split(comp.throughput_name)[1])[0]
+        if name not in already_plotted:
+            plt.plot(x, comp.throughput(x), ls='--', label=name)
+            already_plotted.append(name)
 
     plt.legend()
     plt.show()
