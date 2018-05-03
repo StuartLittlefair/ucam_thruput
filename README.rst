@@ -115,3 +115,82 @@ path.
 **ULTRASPEC**
 
 .. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/uspec.png
+
+
+Examples
+--------
+
+A few example uses are shown below. These assume you've downloaded many of the PySynphot data files
+and installed them in a directory referenced by the environment variable ```PYSYN_CDBS```.
+
+The following example calculates the colour terms of USPEC/TNT g'-band.
+
+.. code-block:: python
+
+    import os
+    from matplotlib import pyplot as plt
+    import numpy as np
+    from ucam_thruput import setup, getref
+    import pysynphot as S
+
+    pickles_path = os.path.join(os.environ['PYSYN_CDBS'], 'grid', 'pickles', 'dat_uvk')
+    pickles_ms = (
+        ('pickles_uk_1',    'O5V',     39810.7),
+        ('pickles_uk_2',    'O9V',     35481.4),
+        ('pickles_uk_3',    'B0V',     28183.8),
+        ('pickles_uk_4',    'B1V',     22387.2),
+        ('pickles_uk_5',    'B3V',     19054.6),
+        ('pickles_uk_6',    'B5-7V',   14125.4),
+        ('pickles_uk_7',    'B8V',     11749.0),
+        ('pickles_uk_9',    'A0V',     9549.93),
+        ('pickles_uk_10',   'A2V',     8912.51),
+        ('pickles_uk_11',   'A3V',     8790.23),
+        ('pickles_uk_12',   'A5V',     8491.80),
+        ('pickles_uk_14',   'F0V',     7211.08),
+        ('pickles_uk_15',   'F2V',     6776.42),
+        ('pickles_uk_16',   'F5V',     6531.31),
+        ('pickles_uk_20',   'F8V',     6039.48),
+        ('pickles_uk_23',   'G0V',     5807.64),
+        ('pickles_uk_26',   'G2V',     5636.38),
+        ('pickles_uk_27',   'G5V',     5584.70),
+        ('pickles_uk_30',   'G8V',     5333.35),
+        ('pickles_uk_31',   'K0V',     5188.00),
+        ('pickles_uk_33',   'K2V',     4886.52),
+        ('pickles_uk_36',   'K5V',     4187.94),
+        ('pickles_uk_37',   'K7V',     3999.45),
+        ('pickles_uk_38',   'M0V',     3801.89),
+        ('pickles_uk_40',   'M2V',     3548.13),
+        ('pickles_uk_43',   'M4V',     3111.72),
+        ('pickles_uk_44',   'M5V',     2951.21)
+    )
+
+    uspec_g = []
+    sdss_g = []
+    sdss_r = []
+    S.setref(**getref('tnt'))
+    for name, spt, teff in pickles_ms:
+        sp = S.FileSpectrum(os.path.join(pickles_path, name+'.fits'))
+
+        bp = S.ObsBandpass('uspec,tnt,g_s')
+        obs = S.Observation(sp, bp, force='taper')
+        uspec_g.append(obs.effstim('abmag'))
+
+    S.setref(comptable=None, graphtable=None)
+    for name, spt, teff in pickles_ms:
+        sp = S.FileSpectrum(os.path.join(pickles_path, name+'.fits'))
+        bp = S.ObsBandpass('sdss,r')
+        obs = S.Observation(sp, bp, force='taper')
+        sdss_r.append(obs.effstim('abmag'))
+        bp = S.ObsBandpass('sdss,g')
+        obs = S.Observation(sp, bp, force='taper')
+        sdss_g.append(obs.effstim('abmag'))
+
+    uspec_g = np.array(uspec_g)
+    sdss_g = np.array(sdss_g)
+    sdss_r = np.array(sdss_r)
+    plt.plot(sdss_g - sdss_r, uspec_g - sdss_g, 'r.')
+    plt.xlabel("g'-r'")
+    plt.ylabel("uspec_g - g'")
+    plt.show()
+
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/uspec_g_colour_terms.png
