@@ -178,15 +178,15 @@ The following example calculates the colour terms of USPEC/TNT g'-band.
     for name, spt, teff in pickles_ms:
         sp = SourceSpectrum.from_file(os.path.join(pickles_path, name+'.fits'))
         bp = SpectralElement.from_filter('johnson_v')
-        obs = S.Observation(sp, bp, force='taper')
+        obs = Observation(sp, bp, force='taper')
         V.append(obs.effstim('abmag'))
         bp = SpectralElement.from_filter('johnson_r')
-        obs = S.Observation(sp, bp, force='taper')
+        obs = Observation(sp, bp, force='taper')
         R.append(obs.effstim('abmag'))
 
-    uspec_g = np.array(uspec_g)
-    V = np.array(V)
-    R= np.array(R)
+    uspec_g = u.Quantity(uspec_g).value
+    V = u.Quantity(V).value
+    R = u.Quantity(R).value
     plt.plot(V - R, uspec_g - V, 'r.')
     plt.xlabel("V-R")
     plt.ylabel("uspec_g - V")
