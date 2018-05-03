@@ -171,7 +171,7 @@ The following example calculates the colour terms of USPEC/TNT g'-band.
     for name, spt, teff in pickles_ms:
         sp = S.FileSpectrum(os.path.join(pickles_path, name+'.fits'))
 
-        bp = S.ObsBandpass('uspec,tnt,g_s')
+        bp = S.ObsBandpass('uspec,tnt,g')
         obs = S.Observation(sp, bp, force='taper')
         uspec_g.append(obs.effstim('abmag'))
 
@@ -194,3 +194,29 @@ The following example calculates the colour terms of USPEC/TNT g'-band.
     plt.show()
 
 .. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/uspec_g_colour_terms.png
+
+------------
+
+Here is an example that plots the various contributions to a bandpass.
+
+.. code-block:: python
+
+    import os
+
+    import pysynphot as S
+    from ucam_thruput import getref
+    from matplotlib import pyplot as plt
+
+    S.setref(**getref('tnt'))
+    bp = S.ObsBandpass('uspec,tnt,g')
+
+    plt.plot(bp.wave, bp.throughput, 'k-')
+    for comp in bp.complist():
+        name = os.path.splitext(os.path.split(comp.name)[1])[0]
+        if name != 'alum':
+            plt.plot(comp.wave, comp.throughput, ls='--', label=name)
+
+    plt.legend()
+    plt.show()
+
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/uspec_g_thruput.png
