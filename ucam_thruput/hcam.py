@@ -26,8 +26,7 @@ class Hcam:
         ],
         z=[
             Filter('z', 'hcam_z'),
-            Filter('z_s', 'hcam_z_s'),
-            Filter('Y', 'hcam_y')
+            Filter('z_s', 'hcam_z_s')
         ]
     )
 
