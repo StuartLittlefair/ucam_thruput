@@ -14,6 +14,7 @@ class Common:
         self.edgelist = [
             Edge(1, 2, 'atmos'),
             Edge(1, 2, 'clear', 'noatmos'),
+            Edge(1, 6, 'clear', 'nomirrors'),
             Edge(2, 3, 'alum'),
             Edge(3, 4, 'alum'),
             Edge(3, 6, 'alum', 'wht'),
