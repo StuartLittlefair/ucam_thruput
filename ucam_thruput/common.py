@@ -23,7 +23,7 @@ class Common:
             Edge(5, 6, 'alum'),
             Edge(6, 7, 'clear', 'hcam'),
             Edge(6, 10, 'clear'),
-            Edge(7, 10, 'scint_corr', 'scint_corr'),
+            Edge(7, 10, 'compo', 'compo'),
             Edge(7, 10, 'clear'),
             Edge(10, 11, 'clear', 'ucam'),
             Edge(10, 12, 'clear', 'hcam'),
@@ -36,7 +36,7 @@ class Common:
             ((3,), '2ry'),
             ((4,), '3ry'),
             ((5,), '4ry'),
-            ((6, 7), 'scintillation'),
+            ((6, 7), 'COMPO'),
             ((10, 11, 12, 13), 'main')
         ]
 
