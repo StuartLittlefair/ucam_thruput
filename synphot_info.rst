@@ -1,4 +1,4 @@
-Using `ucam_thruput` with `synphot <http://synphot.readthedocs.io/en/latest/>`
+Using `ucam_thruput` with `synphot <http://synphot.readthedocs.io/en/latest/>`_
 ===================================
 
 If you are using the newer `synphot <http://synphot.readthedocs.io/en/latest/>`_ and
@@ -47,3 +47,6 @@ of a single bandpass and it's components from the README
         thru = comp.throughput
         ax.plot(thru.waveset, thru(thru.waveset), ls='--', label=name)
     plt.legend()
+
+
+.. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/hcam_gs_thruput.png
