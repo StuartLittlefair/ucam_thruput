@@ -28,6 +28,15 @@ For more information, see:
 Usage
 -----
 
+..note::
+    This module (and the instructions below) was written to be used with `pysynphot <http://pysynphot.readthedocs.io/en/latest/>`_.
+    The synphot code is being re-factored into a general purpose package `synphot <http://synphot.readthedocs.io/en/latest/>`_
+    and an extension that implements HST and JWST specific functionality - `stsynphot <http://stsynphot.readthedocs.io/en/latest/>`_.
+
+    ``ucam_thruput`` can be used with the new modules if you prefer. See the `synphot instructions`_ for more info.
+
+.. _synphot instructions: synphot_info.rst
+
 First of all, follow the installation directions for `pysynphot <http://pysynphot.readthedocs.io/en/latest/>`_
 (whilst the module will install without ``pysynphot``, it won't do much!). Make sure you
 also install some of the data files, in particular those in the ``synphot1.tar.gz`` archive.
@@ -38,7 +47,6 @@ You can do this from inside Python:
 
 .. code-block:: python
     from ucam_thruput import setup
-
     setup()
 
 You will only need to do this once. Once setup, you can then enable the
