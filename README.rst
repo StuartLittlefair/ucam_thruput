@@ -122,7 +122,7 @@ path.
 Examples
 --------
 
-A few example uses are shown below. These assume you've downloaded many of the PySynphot data files
+A few example uses are shown below. These assume you've downloaded many of the stsynphot data files
 and installed them in a directory referenced by the environment variable ```PYSYN_CDBS```.
 
 The following example calculates the colour terms of USPEC/TNT g'-band.
