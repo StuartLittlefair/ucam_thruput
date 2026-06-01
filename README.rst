@@ -2,14 +2,16 @@ ULTRACAM/HiperCAM/ULTRASPEC Throughput Models
 ===================================
 
 ``ucam_thruput`` provides throughput models for the instruments HiperCAM, ULTRACAM
-and ULTRASPEC, and some tools for using these throughput models with the Python
-module `pysynphot <http://pysynphot.readthedocs.io/en/latest/>`_.
+and ULTRASPEC, and some tools for using these throughput models with the 
+`synphot <http://synphot.readthedocs.io/en/latest/>`_ and
+`stsynphot <http://stsynphot.readthedocs.io/en/latest/>`_ modules.
 
 Installation
 ------------
 
 The software is written as much as possible to make use of core Python
-components. The only third-party requirements are `astropy <http://astropy.org/>`_,
+components. The only third-party requirements are `synphot <http://synphot.readthedocs.io/en/latest/>`_,
+`stsynphot <http://stsynphot.readthedocs.io/en/latest/>`_, `astropy <http://astropy.org/>`_,
 ``numpy`` and, optionally, `graphviz <http://graphviz.readthedocs.io/en/stable/manual.html>`_
  for making pretty graphical illustrations of the lightpath through the instruments.
 
@@ -28,19 +30,13 @@ For more information, see:
 Usage
 -----
 
-..note::
-    This module (and the instructions below) was written to be used with `pysynphot <http://pysynphot.readthedocs.io/en/latest/>`_.
-    The synphot code is being re-factored into a general purpose package `synphot <http://synphot.readthedocs.io/en/latest/>`_
-    and an extension that implements HST and JWST specific functionality - `stsynphot <http://stsynphot.readthedocs.io/en/latest/>`_.
-
-    ``ucam_thruput`` can be used with the new modules if you prefer. See the `synphot instructions`_ for more info.
-
-.. _synphot instructions: synphot_info.rst
-
-First of all, follow the installation directions for `pysynphot <http://pysynphot.readthedocs.io/en/latest/>`_
-(whilst the module will install without ``pysynphot``, it won't do much!). Make sure you
-also install some of the data files, in particular those in the ``synphot1.tar.gz`` archive.
-Set the ``PYSYN_CDBS`` environment variable to the location of these data files.
+First of all, after installing `synphot <http://synphot.readthedocs.io/en/latest/>`_ and
+`stsynphot <http://stsynphot.readthedocs.io/en/latest/>`_, make sure you
+also install some of the data files, in particular those in the 
+`HST data files <https://stsynphot.readthedocs.io/en/latest/stsynphot/data_hst.html>`_ section
+for bandpasses and the `Atlases <https://stsynphot.readthedocs.io/en/latest/stsynphot/data_atlas.html>`_
+for calibration spectra such as the Vega reference spectrum. Set the ``PYSYN_CDBS`` environment 
+variable to the location of these data files.
 
 When you use the module for the first time, some data files must be installed.
 You can do this from inside Python:
@@ -49,38 +45,36 @@ You can do this from inside Python:
     from ucam_thruput import setup
     setup()
 
-You will only need to do this once. Once setup, you can then enable the
-``ucam_thruput`` models in Python like so:
+You will only need to do this once. 
+
+Using the `ucam_thruput` models is just a matter of changing the tables used by `stsynphot`
+to create a bandpass from keywords.
 
 .. code-block:: python
 
-    import pysynphot as S
-    from ucam_thruput import getref
+    import stsynphot as stsyn
+    from ucam_thruput import setref
+    
+    setref('ntt')  # set the tables to use the ucam_thruput models for the NTT (sets telescope area)
 
-    # now make pysynphot use our throughput models
-    # we specify a telescope here so that we set the primary area
-    setup_dictionary = getref('tnt')
-    S.setref(**setup_dictionary)
-
-You can switch back to using the built-in ``pysynphot`` models (including HST instruments,
+You can switch back to using the built-in ``stsynphot`` models (including HST instruments,
 and Johnson/SDSS filters) at any time
 
 .. code-block:: python
 
-    S.setref(comptable=None, graphtable=None)  # leave the telescope area as it was
-    S.setref(area=None)  # reset the telescope area as well
+    stsyn.conf.reset()
 
-Once ``pysynphot`` is setup to use the ``ucam_thruput`` models, we can define a
-`BandPass <http://pysynphot.readthedocs.io/en/latest/bandpass.html>`_ using a
+Once ``stsynphot`` is setup to use the ``ucam_thruput`` models, we can define a
+`BandPass <https://synphot.readthedocs.io/en/latest/synphot/bandpass.html>`_ using a
 string of specified instrument mode keywords:
 
 .. code-block:: python
 
     # make a bandpass object using an obsmode string
-    bp = S.ObsBandPass('uspec,tnt,g')
+    bp = stsyn.band('uspec,tnt,g')
 
-These bandpasses can be used with ``pysynphot`` in the usual way. See the
-``pysynphot`` `docs <http://pysynphot.readthedocs.io/en/latest>`_ for full
+These bandpasses can be used with ``stsynphot`` in the usual way. See the
+``stsynphot`` `docs <http://stsynphot.readthedocs.io/en/latest>`_ for full
 information.
 
 A complete observing mode string specfies the telescope (gtc, tnt, wht, ntt or vlt),
@@ -102,7 +96,7 @@ Below are graphical representations of the instrument throughput models. The lig
 are shown as a series of nodes, connected by edges (lines). Each edge represents the
 application of a transparency curve. If a line is labelled by a keyword, that path will
 only be taken if the keyword is present in the string used to define the
-`BandPass <http://pysynphot.readthedocs.io/en/latest/bandpass.html>`_.
+`BandPass <https://synphot.readthedocs.io/en/latest/synphot/bandpass.html>`_.
 
 Dashed lines represent "clear" transparency curves, that do not affect the throughput.
 Red lines represent reflections from dichroic surfaces. Unlabelled lines represent the default
@@ -138,8 +132,9 @@ The following example calculates the colour terms of USPEC/TNT g'-band.
     import os
     from matplotlib import pyplot as plt
     import numpy as np
-    from ucam_thruput import setup, getref
-    import pysynphot as S
+    from ucam_thruput import setref
+    import stsynphot as stsyn
+    import synphot as syn
 
     pickles_path = os.path.join(os.environ['PYSYN_CDBS'], 'grid', 'pickles', 'dat_uvk')
     pickles_ms = (
@@ -175,22 +170,23 @@ The following example calculates the colour terms of USPEC/TNT g'-band.
     uspec_g = []
     sdss_g = []
     sdss_r = []
-    S.setref(**getref('tnt'))
+    setref('tnt')
     for name, spt, teff in pickles_ms:
-        sp = S.FileSpectrum(os.path.join(pickles_path, name+'.fits'))
+        sp = syn.SourceSpectrum.from_file(os.path.join(pickles_path, name+'.fits'))
 
-        bp = S.ObsBandpass('uspec,tnt,g')
-        obs = S.Observation(sp, bp, force='taper')
+        bp = stsyn.band('uspec,tnt,g')
+        obs = syn.Observation(sp, bp, force='taper')
         uspec_g.append(obs.effstim('abmag'))
 
-    S.setref(comptable=None, graphtable=None)
+    stsyn.conf.reset()
     for name, spt, teff in pickles_ms:
-        sp = S.FileSpectrum(os.path.join(pickles_path, name+'.fits'))
-        bp = S.ObsBandpass('sdss,r')
-        obs = S.Observation(sp, bp, force='taper')
+        sp = syn.SourceSpectrum.from_file(os.path.join(pickles_path, name+'.fits'))
+        bp = stsyn.band('sdss,r')
+        obs = syn.Observation(sp, bp, force='taper')
         sdss_r.append(obs.effstim('abmag'))
-        bp = S.ObsBandpass('sdss,g')
-        obs = S.Observation(sp, bp, force='taper')
+
+        bp = stsyn.band('sdss,g')
+        obs = syn.Observation(sp, bp, force='taper')
         sdss_g.append(obs.effstim('abmag'))
 
     uspec_g = np.array(uspec_g)
@@ -209,22 +205,21 @@ Here is an example that plots the various contributions to a bandpass.
 
 .. code-block:: python
 
+    import stsynphot as stsyn
+    from ucam_thruput import setref
     import os
 
-    import pysynphot as S
-    from ucam_thruput import getref
-    from matplotlib import pyplot as plt
+    setref('gtc')
 
-    S.setref(**getref('tnt'))
-    bp = S.ObsBandpass('uspec,tnt,g')
-
-    plt.plot(bp.wave, bp.throughput, 'k-')
-    for comp in bp.complist():
-        name = os.path.splitext(os.path.split(comp.name)[1])[0]
-        if name != 'alum':
-            plt.plot(comp.wave, comp.throughput, ls='--', label=name)
-
+    bp = stsyn.band('hcam,gtc,g_s')
+    fig, ax = plt.subplots()
+    ax.plot(bp.waveset, bp(bp.waveset))
+    for comp in bp.obsmode.components:
+        name = os.path.splitext(os.path.split(comp.throughput_name)[1])[0]
+        if 'alum' in comp.throughput_name:
+            continue
+        thru = comp.throughput
+        ax.plot(thru.waveset, thru(thru.waveset), ls='--', label=name)
     plt.legend()
-    plt.show()
 
 .. image:: https://raw.github.com/StuartLittlefair/ucam_thruput/master/images/uspec_g_thruput.png

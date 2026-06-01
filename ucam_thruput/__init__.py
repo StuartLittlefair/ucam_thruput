@@ -1,10 +1,11 @@
-from __future__ import absolute_import, division, print_function, unicode_literals
+from __future__ import (absolute_import, division, print_function,
+                        unicode_literals)
 
-from itertools import chain
-import os
 import datetime
 import importlib
+import os
 import shutil
+from itertools import chain
 
 import numpy as np
 from astropy.table import Table
@@ -57,21 +58,22 @@ def list_keywords():
     return kws
 
 
-def getref(telescope):
+def setref(telescope):
     """
-    Get dictionary used to setup pysynphot to use ULTRACAM tables
+    Setup stysnphot to use the ucam_thruput tables.
 
     Parameters
     ----------
     telescope : string
         Telescope observations will be made at. Used to set primary area.
     """
+    import stsynphot as stsyn
     assert telescope in TELESCOPE_AREAS
     itable, mtable = _check_tables()
-    ref_dict = dict(
-        area=TELESCOPE_AREAS[telescope], graphtable=itable, comptable=mtable
-    )
-    return ref_dict
+
+    stsyn.conf.graphtable = itable
+    stsyn.conf.comptable = mtable
+    stsyn.conf.area = TELESCOPE_AREAS[telescope]
 
 
 def setup():
@@ -123,10 +125,10 @@ def _install_throughput_files():
 
 
 def _make_instrument_reference_table():
-    from .ucam import Ucam
-    from .uspec import Uspec
     from .common import Common
     from .hcam import Hcam
+    from .ucam import Ucam
+    from .uspec import Uspec
 
     c = Common()
     u = Ucam()
