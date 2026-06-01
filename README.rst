@@ -209,9 +209,9 @@ Here is an example that plots the various contributions to a bandpass.
     from ucam_thruput import setref
     import os
 
-    setref('gtc')
+    setref('tnt')
 
-    bp = stsyn.band('hcam,gtc,g_s')
+    bp = stsyn.band('uspec,tnt,g')
     fig, ax = plt.subplots()
     ax.plot(bp.waveset, bp(bp.waveset))
     for comp in bp.obsmode.components:
