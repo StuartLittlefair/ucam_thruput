@@ -1,9 +1,11 @@
-from __future__ import print_function, absolute_import
-from setuptools import setup
-import os
-import glob
+from __future__ import absolute_import, print_function
 
-requirements = ["numpy", "astropy" "synphot", "stsynphot"]
+import glob
+import os
+
+from setuptools import setup
+
+requirements = ["numpy", "astropy", "synphot", "stsynphot"]
 
 setup(
     name="ucam_thruput",
